@@ -39,7 +39,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://ghaza-una-fact-checker-api.onrender.com",
-    "https://ghaza-una-fact-checker-front.vercel.app/"
+    "https://ghaza-una-fact-checker-front.vercel.app"
 ]
 
 
@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'fact_check_with_openai',
-    'image_fact_check',
 ]
 
 MIDDLEWARE = [
