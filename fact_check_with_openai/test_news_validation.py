@@ -13,7 +13,7 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-from utils_async import is_news_content_async
+from utils import is_news_content
 
 
 # عناوين إخبارية صحيحة (يجب قبولها)
@@ -120,7 +120,7 @@ async def test_validation():
     
     for i, headline in enumerate(VALID_NEWS_HEADLINES, 1):
         try:
-            is_valid, reason = await is_news_content_async(headline)
+            is_valid, reason = await is_news_content(headline)
             status = "[OK]" if is_valid else "[X]"
             result_text = "قبلت" if is_valid else f"رفضت: {reason}"
             
@@ -143,7 +143,7 @@ async def test_validation():
     
     for i, text in enumerate(INVALID_NON_NEWS, 1):
         try:
-            is_valid, reason = await is_news_content_async(text)
+            is_valid, reason = await is_news_content(text)
             status = "[OK]" if not is_valid else "[X]"
             result_text = "رفضت ✓" if not is_valid else f"قبلت ✗ (يجب رفضها)"
             
@@ -199,7 +199,7 @@ async def test_specific_headlines():
         print(f"   الوصف: {description}")
         print(f"   المتوقع: {'قبول' if expected else 'رفض'}")
         try:
-            is_valid, reason = await is_news_content_async(text)
+            is_valid, reason = await is_news_content(text)
             status = "[✓] نجح" if is_valid == expected else "[✗] فشل"
             result = "قبلت" if is_valid else "رفضت"
             print(f"   النتيجة الفعلية: {result}")

@@ -22,7 +22,7 @@ if sys.platform == 'win32':
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
-from utils_async import check_fact_simple_async
+from utils import check_fact_simple
 
 
 # ==================== TEST CASES ====================
@@ -288,7 +288,7 @@ async def test_single_claim(claim_data: dict, test_number: int, total_tests: int
     
     try:
         # Run fact-check
-        result = await check_fact_simple_async(claim, k_sources=8, generate_news=False, preserve_sources=False, generate_tweet=False)
+        result = await check_fact_simple(claim, k_sources=8, generate_news=False, preserve_sources=False, generate_tweet=False)
         
         case = result.get("case", "غير معروف")
         talk = result.get("talk", "")

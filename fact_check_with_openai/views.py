@@ -7,16 +7,12 @@ import json
 import traceback
 import asyncio
 
-# Import async utilities
-from .utils_async import (
-    check_fact_simple_async,
+# Import async utilities from unified utils module
+from .utils import (
+    check_fact_simple,
     async_client,
     OPENAI_MODEL,
-    is_news_content_async
-)
-
-# Keep sync imports for backward compatibility endpoints
-from .utils import (
+    is_news_content,
     generate_analytical_news_article,
     generate_professional_news_article_from_analysis,
     generate_x_tweet
@@ -65,16 +61,15 @@ class FactCheckWithOpenaiView(View):
                     status=400,
                 )
 
-            # ✅ التحقق من أن النص متعلق بالأخبار المتخصصة في غزة وفلسطين ومنظمة التعاون الإسلامي فقط
-            is_valid, reason = await is_news_content_async(query)
+            # ✅ التحقق من أن النص متعلق بالأخبار المتخصصة في غزة وفلسطين وجيش الاحتلال الاسرائيلي فقط
+            is_valid, reason = await is_news_content(query)
             if not is_valid:
                 # رسالة خطأ واضحة ومفصلة للمستخدم
                 error_message = reason if reason else """⚠️ هذا النظام متخصص فقط في التحقق من الأخبار المتعلقة بـ:
-• غزة (قطاع غزة)
 • فلسطين (الأراضي الفلسطينية، الشعب الفلسطيني، السلطة الفلسطينية)
-• منظمة التعاون الإسلامي (خاصة فيما يتعلق بفلسطين وغزة)
+• قطاع غزة
 
-النص المقدم لا يتعلق بهذا السياق المتخصص. يرجى إرسال خبر أو ادعاء متعلق بغزة أو فلسطين أو منظمة التعاون الإسلامي فقط."""
+النص المقدم لا يتعلق بهذا السياق المتخصص. يرجى إرسال خبر أو ادعاء متعلق بفلسطين أو قطاع غزة فقط."""
                 return JsonResponse(
                     {"ok": False, "error": error_message},
                     status=400,
@@ -90,7 +85,7 @@ class FactCheckWithOpenaiView(View):
             generate_tweet = payload.get("generate_tweet", False)
             
             # استخدام النسخة الـ async
-            result = await check_fact_simple_async(query, k_sources=10, generate_news=generate_news, preserve_sources=preserve_sources, generate_tweet=generate_tweet)
+            result = await check_fact_simple(query, k_sources=10, generate_news=generate_news, preserve_sources=preserve_sources, generate_tweet=generate_tweet)
 
             # ✅ نعيد المفاتيح الموحدة
             return JsonResponse(
@@ -135,7 +130,7 @@ class AnalyticalNewsView(View):
       }
     """
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    async def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             # تأكّد من أن البودي JSON صالح
             try:
@@ -163,7 +158,7 @@ class AnalyticalNewsView(View):
                 )
 
             # توليد المقال التحليلي
-            analytical_article = generate_analytical_news_article(headline, analysis, lang)
+            analytical_article = await generate_analytical_news_article(headline, analysis, lang)
 
             return JsonResponse(
                 {
@@ -206,7 +201,7 @@ class ComposeNewsView(View):
       }
     """
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    async def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             try:
                 payload = json.loads(request.body.decode("utf-8"))
@@ -241,7 +236,7 @@ class ComposeNewsView(View):
                 )
 
             # توليد المقال الإخباري من نتيجة الفحص
-            news_article = generate_professional_news_article_from_analysis(
+            news_article = await generate_professional_news_article_from_analysis(
                 claim_text=claim_text,
                 case=case,
                 talk=talk,
@@ -288,7 +283,7 @@ class ComposeTweetView(View):
       }
     """
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    async def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         try:
             try:
                 payload = json.loads(request.body.decode("utf-8"))
@@ -323,7 +318,7 @@ class ComposeTweetView(View):
                 )
 
             # توليد التغريدة من نتيجة الفحص
-            x_tweet = generate_x_tweet(
+            x_tweet = await generate_x_tweet(
                 claim_text=claim_text,
                 case=case,
                 talk=talk,
