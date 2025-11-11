@@ -29,8 +29,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
     'ghaza-una-fact-checker-api.onrender.com',
-    'palastine-fact-checker.vercel.app'
-
+    'palastine-fact-checker.vercel.app',
+    '62.72.22.223'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -39,7 +39,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://localhost:5174",
     "https://ghaza-una-fact-checker-api.onrender.com",
-    "https://palastine-fact-checker.vercel.app"
+    "https://palastine-fact-checker.vercel.app",
+    "http://62.72.22.223",
 ]
 
 
