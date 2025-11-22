@@ -25,10 +25,72 @@ async_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
 def translate_date_references(text: str) -> str:
     """
-    إرجاع النص كما هو دون تغيير المراجع الزمنية
-    لتجنب تغيير معنى البحث عند استخدام كلمات مثل "اليوم"
+    Replace temporal references (like "today", "right now", "currently") with today's actual date
+    This helps the search engine understand that the user is asking about today's events
     """
-    return text
+    today_date = datetime.now().strftime('%Y-%m-%d')
+
+    # English temporal keywords
+    english_keywords = [
+        'right now', 'just now', 'currently', 'at the moment', 'at present',
+        'presently', 'at this time', 'as we speak', 'this moment'
+    ]
+
+    # Arabic temporal keywords
+    arabic_keywords = [
+        'الآن', 'حالياً', 'حاليا', 'في الوقت الحالي', 'في هذه اللحظة',
+        'الآن تماماً', 'في هذا الوقت', 'حالا'
+    ]
+
+    # French temporal keywords
+    french_keywords = [
+        'maintenant', 'actuellement', 'en ce moment', 'à l\'instant',
+        'présentement', 'à présent'
+    ]
+
+    # Spanish temporal keywords
+    spanish_keywords = [
+        'ahora mismo', 'actualmente', 'en este momento', 'ahora',
+        'en la actualidad', 'al momento'
+    ]
+
+    # Process text
+    processed_text = text
+
+    # Replace English keywords
+    for keyword in english_keywords:
+        if keyword in processed_text.lower():
+            # Use case-insensitive replacement
+            import re
+            pattern = re.compile(re.escape(keyword), re.IGNORECASE)
+            processed_text = pattern.sub(f'today ({today_date})', processed_text)
+
+    # Replace Arabic keywords
+    for keyword in arabic_keywords:
+        if keyword in processed_text:
+            processed_text = processed_text.replace(keyword, f'اليوم ({today_date})')
+
+    # Replace French keywords
+    for keyword in french_keywords:
+        if keyword in processed_text.lower():
+            import re
+            pattern = re.compile(re.escape(keyword), re.IGNORECASE)
+            processed_text = pattern.sub(f'aujourd\'hui ({today_date})', processed_text)
+
+    # Replace Spanish keywords
+    for keyword in spanish_keywords:
+        if keyword in processed_text.lower():
+            import re
+            pattern = re.compile(re.escape(keyword), re.IGNORECASE)
+            processed_text = pattern.sub(f'hoy ({today_date})', processed_text)
+
+    # Also handle standalone "today" and "اليوم" if not already replaced
+    if 'today' in processed_text.lower() and today_date not in processed_text:
+        import re
+        pattern = re.compile(r'\btoday\b', re.IGNORECASE)
+        processed_text = pattern.sub(f'today ({today_date})', processed_text)
+
+    return processed_text
 
 async def _lang_hint_from_claim(text: str) -> str:
     """Detect language from claim text (async)"""
