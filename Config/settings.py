@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [
     'ghaza-una-fact-checker-api.onrender.com',
     'palastine-fact-checker.vercel.app',
     '62.72.22.223',
-    'palastine-fact-check.una-oic.org'
+    'palastine-fact-check.una-oic.org',
+    'palesti-fact.una-gate.com'
 ]
 
 CORS_ALLOWED_ORIGINS = [
@@ -42,7 +43,8 @@ CORS_ALLOWED_ORIGINS = [
     "https://ghaza-una-fact-checker-api.onrender.com",
     "https://palastine-fact-checker.vercel.app",
     "http://62.72.22.223",
-    "https://palastine-fact-check.una-oic.org"
+    "https://palastine-fact-check.una-oic.org",
+    "https://palesti-fact.una-gate.com"
 ]
 
 
