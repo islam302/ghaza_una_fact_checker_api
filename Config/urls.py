@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('fact_check/', include('fact_check_with_openai.urls')),
+    path('palastine-fact_check/', include('fact_check_with_openai.urls')),
 ]
