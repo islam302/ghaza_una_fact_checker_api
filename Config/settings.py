@@ -32,7 +32,8 @@ ALLOWED_HOSTS = [
     'palastine-fact-checker.vercel.app',
     '62.72.22.223',
     'palastine-fact-check.una-oic.org',
-    'palesti-fact.una-gate.com'
+    'palesti-fact.una-gate.com',
+    'wafa.una-oic.org'
 ]
 
 CORS_ALLOWED_ORIGINS = [
